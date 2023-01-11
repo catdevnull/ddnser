@@ -1,5 +1,7 @@
 package nameservers
 
+import "context"
+
 type NameServer interface {
-	SetRecord(domain string, overrideIp string) (string, error)
+	SetRecord(ctx context.Context, domain string, overrideIp string) (string, error)
 }

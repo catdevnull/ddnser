@@ -1,6 +1,7 @@
 package nameservers
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"io"
@@ -11,7 +12,7 @@ import (
 )
 
 type Njalla struct {
-	httpClient http.Client
+	HTTPClient *http.Client
 	Key        string
 }
 
@@ -25,7 +26,7 @@ type njallaResponse struct {
 	Value   njallaValue `json:"value"`
 }
 
-func (n *Njalla) SetRecord(domain string, overrideIp string) (string, error) {
+func (n *Njalla) SetRecord(ctx context.Context, domain string, overrideIp string) (string, error) {
 	u, _ := url.Parse("https://njal.la/update/")
 	values := url.Values{
 		"h": {domain},
@@ -39,7 +40,11 @@ func (n *Njalla) SetRecord(domain string, overrideIp string) (string, error) {
 	}
 	u.RawQuery = values.Encode()
 
-	resp, err := n.httpClient.Get(u.String())
+	req, err := http.NewRequestWithContext(ctx, "GET", u.String(), nil)
+	if err != nil {
+		return "", err
+	}
+	resp, err := n.HTTPClient.Do(req)
 	if err != nil {
 		return "", err
 	}
@@ -52,7 +57,7 @@ func (n *Njalla) SetRecord(domain string, overrideIp string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	log.Println(string(body))
+	log.Printf("[njalla ddns] Response: %s", string(body))
 
 	if resp.StatusCode < 200 || resp.StatusCode > 299 {
 		return "", errors.New("Not nice status code: " + strconv.Itoa(resp.StatusCode) + " with body: " + string(body))
