@@ -63,6 +63,11 @@ func LoadConfig(path string) (state State, err error) {
 				Name:       d.Name,
 				NameServer: &nameservers.Njalla{HTTPClient: &state.HTTPClient, Key: d.Key},
 			})
+		case "he.net ddns":
+			state.Domains = append(state.Domains, Domain{
+				Name:       d.Name,
+				NameServer: &nameservers.HeNet{HTTPClient: &state.HTTPClient, Password: d.Key},
+			})
 		default:
 			err = errors.New("I don't know the service type " + d.Type)
 			return
