@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -30,17 +31,23 @@ func main() {
 			ctx, cancel := context.WithTimeout(context.Background(), time.Duration(10)*time.Second)
 			defer cancel()
 			log.Printf("Running because of %s", reason)
+			var wg sync.WaitGroup
+			wg.Add(len(config.Domains))
 			for _, d := range config.Domains {
-				record, err := d.NameServer.SetRecord(ctx, d.Name, config.Ip)
-				if err != nil {
-					log.Println(err)
-					continue
-				}
-				log.Printf("[%s] Set to %s", d.Name, record)
+				go func(d Domain, wg *sync.WaitGroup) {
+					record, err := d.NameServer.SetRecord(ctx, d.Name, config.Ip)
+					if err != nil {
+						log.Println(err)
+						// TODO: Reportar errores
+						return
+					}
+					log.Printf("[%s] Set to %s", d.Name, record)
+					wg.Done()
+
+				}(d, &wg)
 			}
 		case err := <-errch:
 			log.Fatal(err)
-
 		}
 	}
 }
