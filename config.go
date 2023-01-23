@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"os"
 
-	"nulo.in/ddnser/nameservers"
+	"gitea.nulo.in/Nulo/ddnser/nameservers"
 )
 
 type config struct {

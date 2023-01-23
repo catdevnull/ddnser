@@ -1,3 +1,3 @@
-module nulo.in/ddnser
+module gitea.nulo.in/Nulo/ddnser
 
 go 1.19
