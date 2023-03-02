@@ -54,7 +54,7 @@ func LoadConfig(path string) (state State, err error) {
 	state.Every = parsed.Every
 	// if not defined or 0, set to default
 	if state.Every == 0 {
-		state.Every = 300
+		state.Every = 2
 	}
 	for _, d := range parsed.Domains {
 		switch d.Type {
