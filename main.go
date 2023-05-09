@@ -37,7 +37,7 @@ func main() {
 				go func(d Domain, wg *sync.WaitGroup) {
 					record, err := d.NameServer.SetRecord(ctx, d.Name, config.Ip)
 					if err != nil {
-						log.Println(err)
+						log.Printf("[%s] error: %s", d.Name, err.Error())
 						// TODO: Reportar errores
 						return
 					}
