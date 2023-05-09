@@ -57,7 +57,7 @@ func (n *Njalla) SetRecord(ctx context.Context, domain string, overrideIp string
 	if err != nil {
 		return "", err
 	}
-	log.Printf("[njalla ddns] Response: %s", string(body))
+	log.Printf("debug: [njalla ddns] Response: %s", string(body))
 
 	if resp.StatusCode < 200 || resp.StatusCode > 299 {
 		return "", errors.New("Not nice status code: " + strconv.Itoa(resp.StatusCode) + " with body: " + string(body))

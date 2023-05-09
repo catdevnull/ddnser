@@ -39,7 +39,7 @@ func (h *HeNet) SetRecord(ctx context.Context, domain string, overrideIp string)
 	if err != nil {
 		return "", err
 	}
-	log.Printf("[he.net ddns(%s)] Response: %s", domain, string(body))
+	log.Printf("debug: [he.net ddns(%s)] Response: %s", domain, string(body))
 
 	things := strings.Split(string(body), " ")
 	if len(things) != 2 {
