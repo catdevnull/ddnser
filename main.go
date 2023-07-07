@@ -4,8 +4,6 @@ import (
 	"context"
 	"log"
 	"os"
-	"os/exec"
-	"strings"
 	"sync"
 	"time"
 )
@@ -24,7 +22,6 @@ func main() {
 	refr := make(refreshChan)
 	errch := make(chan error)
 	go poller(config.Every, refr)
-	go ipPoller(refr, errch)
 	for {
 		select {
 		case reason := <-refr:
@@ -54,34 +51,7 @@ func main() {
 
 func poller(every int, refr refreshChan) {
 	for {
-		time.Sleep(time.Duration(every) * time.Minute)
 		refr <- "poll"
-	}
-}
-
-func ipPoller(refr refreshChan, errch chan error) {
-	var lastWatched string
-	for {
-		cmd := exec.Command("ip", "address")
-		out, err := cmd.Output()
-		if err != nil {
-			errch <- err
-			return
-		}
-		var addrs string
-		lines := strings.Split(string(out), "\n")
-		for _, line := range lines {
-			prefix := "    inet "
-			if strings.Index(line, prefix) == 0 {
-				last := strings.Index(line[len(prefix):], "/")
-				ip := line[len(prefix) : len(prefix)+last]
-				addrs = addrs + ip + "/"
-			}
-		}
-		if addrs != lastWatched {
-			refr <- "ip changed"
-			lastWatched = addrs
-		}
-		time.Sleep(time.Duration(2) * time.Second)
+		time.Sleep(time.Duration(every) * time.Minute)
 	}
 }
