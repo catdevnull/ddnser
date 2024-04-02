@@ -37,3 +37,16 @@ Run:
 ```sh
 ddnser ./path/to/config.json
 ```
+
+## Docker
+
+Compose:
+
+```
+  ddnser:
+    image: ghcr.io/catdevnull/ddnser
+    restart: always
+    volumes:
+      - ./ddnser.json:/config/ddnser.json:ro
+    entrypoint: ddnser /config/ddnser.json
+```
