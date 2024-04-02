@@ -11,6 +11,8 @@ import (
 	"net/http"
 )
 
+// https://github.com/ddclient/ddclient/blob/9885d55a3741363ad52d3463cb846d5782efb073/ddclient.in#L6146
+
 type CloudflareV4 struct {
 	HTTPClient *http.Client
 	Key        string
