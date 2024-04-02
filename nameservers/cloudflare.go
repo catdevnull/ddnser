@@ -9,6 +9,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"strings"
 )
 
 // https://github.com/ddclient/ddclient/blob/9885d55a3741363ad52d3463cb846d5782efb073/ddclient.in#L6146
@@ -76,7 +77,7 @@ func (c *CloudflareV4) getIp(ctx context.Context) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return string(body), nil
+	return strings.TrimSpace(string(body)), nil
 }
 
 type apiZoneSearchResponse struct {
@@ -130,7 +131,7 @@ type apiUpdateDnsRecordRequest struct {
 	Type    string `json:"type"`
 }
 type apiUpdateDnsRecordResponse struct {
-	Result []struct {
+	Result struct {
 		Id      string `json:"id"`
 		Content string `json:"content"`
 	} `json:"result"`
@@ -152,14 +153,11 @@ func (c *CloudflareV4) apiUpdateDnsRecord(ctx context.Context, zoneId, zoneName,
 	if err != nil {
 		return "", err
 	}
-	log.Printf("debug: [cloudflareV4(%s)] Response: %s", zoneName, string(body))
+	log.Printf("debug: [cloudflareV4(%s)] Response: %s", zoneName, string(str))
 	var resp apiUpdateDnsRecordResponse
 	err = json.Unmarshal(str, &resp)
 	if err != nil {
 		return "", err
 	}
-	if len(resp.Result) != 1 {
-		return "", errors.New("expected result to be len()=1 but len is " + fmt.Sprintf("%d", len(resp.Result)))
-	}
-	return resp.Result[0].Content, nil
+	return resp.Result.Content, nil
 }
