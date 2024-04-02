@@ -16,8 +16,9 @@ type config struct {
 }
 
 type domain struct {
-	Type string `json:"type"`
-	Name string `json:"name"`
+	Type     string `json:"type"`
+	Name     string `json:"name"`
+	ZoneName string `json:"zoneName,omitempty"`
 	// TODO: lograr que esto sea un coso de propiedades arbitrario
 	Key string `json:"key"`
 }
@@ -67,6 +68,16 @@ func LoadConfig(path string) (state State, err error) {
 			state.Domains = append(state.Domains, Domain{
 				Name:       d.Name,
 				NameServer: &nameservers.HeNet{HTTPClient: &state.HTTPClient, Password: d.Key},
+			})
+		case "cloudflare v4 api":
+			if len(d.ZoneName) == 0 {
+				err = errors.New("cloudflare v4 api: missing zoneName property")
+				return
+			}
+			state.Domains = append(state.Domains, Domain{
+				Name: d.Name,
+				NameServer: &nameservers.CloudflareV4{HTTPClient: &state.HTTPClient, Key: d.Key,
+					ZoneName: d.ZoneName},
 			})
 		default:
 			err = errors.New("I don't know the service type " + d.Type)

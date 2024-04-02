@@ -21,6 +21,12 @@ Create a config file:
       "type": "he.net ddns",
       "name": "pruebas.bat.ar",
       "key": "INSERT_KEY"
+    },
+    {
+      "type": "cloudflare v4 api",
+      "name": "*.nulo.in",
+      "zoneName": "nulo.in",
+      "key": "INSERT_KEY" // https://dash.cloudflare.com/profile/api-tokens
     }
   ]
 }
