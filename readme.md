@@ -1,6 +1,6 @@
 # ddnser
 
-Refreshes domain records periodically or when interfaces change IP addresses.
+Refreshes domain records periodically.
 
 ## Usage
 
