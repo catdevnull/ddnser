@@ -43,7 +43,7 @@ func (h *HeNet) SetRecord(ctx context.Context, domain string, overrideIp string)
 
 	things := strings.Split(string(body), " ")
 	if len(things) != 2 {
-		return "", errors.New("Response is weird")
+		return "", errors.New("response is weird")
 	}
 
 	if things[0] != "good" && things[0] != "nochg" {
